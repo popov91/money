@@ -2,8 +2,10 @@
 
 namespace App\Console;
 
+use App\Models\Valute;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Artisan;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,7 +26,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Ежедневно обновляем данные по валютам
+        $schedule->call(function () {
+            Valute::truncate();
+            Artisan::call('db:seed');
+        })->dailyAt('03:00');
     }
 
     /**
